@@ -11,8 +11,6 @@ namespace AppRedarbor.Services
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        readonly List<T> items;
-
         // Inyeccion de dependencias se debe importar el IHttpClientFactory
         private readonly IHttpClientFactory _clientFactory;
         public Repository(IHttpClientFactory clientFactory)
@@ -24,59 +22,84 @@ namespace AppRedarbor.Services
 
         public async Task<bool> SaveAsync(string url, T itemSave)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, url);
-            HttpClient httpClient = new HttpClient();
+            if (itemSave == null) return false;
 
-            if (itemSave != null)
-                request.Content = new StringContent(JsonConvert.SerializeObject(itemSave), Encoding.UTF8, "application/json");
+            try
+            {
+                Uri requestUri = new Uri(url);
+                HttpClientHandler clientHandler = new HttpClientHandler();
 
-            HttpResponseMessage response = await httpClient.SendAsync(request);
+                HttpClient httpClient = new HttpClient(clientHandler);
+                var contentJson = new StringContent(JsonConvert.SerializeObject(itemSave), Encoding.UTF8, "application/json");
+                var response = await httpClient.PostAsync(requestUri, contentJson);
 
-            if (response.StatusCode == HttpStatusCode.OK)
-                return true;
-            else
-                return false;
+                if (response.StatusCode == HttpStatusCode.OK)
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
         public async Task<bool> DeleteAsync(string url, int Id)
         {
-            var request = new HttpRequestMessage(HttpMethod.Delete, url + Id);
-            HttpClient httpClient = new HttpClient();
+            try
+            {
+                Uri requestUri = new Uri(url + Id);
+                HttpClientHandler clientHandler = new HttpClientHandler();
 
-            HttpResponseMessage response = await httpClient.SendAsync(request);
+                HttpClient httpClient = new HttpClient(clientHandler);
 
-            if (response.StatusCode == HttpStatusCode.OK)
-                return true;
-            else
-                return false;
+                var response = await httpClient.DeleteAsync(requestUri);
+
+                if (response.StatusCode == HttpStatusCode.NoContent)
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<IEnumerable<T>> GetAllAsync(string url)
         {
-            Uri requestUri = new Uri(url);
-            HttpClientHandler clientHandler = new HttpClientHandler();
-            clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
-
-            HttpClient httpClient = new HttpClient(clientHandler);
-
-            var response = await httpClient.GetAsync(requestUri);
-
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            try
             {
-                var jsonString = await response.Content.ReadAsStringAsync();
+                Uri requestUri = new Uri(url);
+                HttpClientHandler clientHandler = new HttpClientHandler();
 
-                var jsonDeserialize = JsonConvert.DeserializeObject<IEnumerable<T>>(jsonString);
-                return jsonDeserialize;
+                HttpClient httpClient = new HttpClient(clientHandler);
+
+                var response = await httpClient.GetAsync(requestUri);
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    var jsonString = await response.Content.ReadAsStringAsync();
+
+                    var jsonDeserialize = JsonConvert.DeserializeObject<IEnumerable<T>>(jsonString);
+                    return jsonDeserialize;
+                }
+                else
+                    return null;
             }
-            else
-                return null;
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
         public async Task<T> GetAsync(string url, int Id)
         {
             Uri requestUri = new Uri(url + Id);
             HttpClientHandler clientHandler = new HttpClientHandler();
-            clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
 
             HttpClient httpClient = new HttpClient(clientHandler);
 
@@ -95,22 +118,27 @@ namespace AppRedarbor.Services
 
         public async Task<bool> UpdateAsync(string url, T itemUpdate)
         {
-            var request = new HttpRequestMessage(HttpMethod.Put, url);
-            HttpClient httpClient = new HttpClient();
+            if (itemUpdate == null) return false;
+            
+            try
+            {
+                Uri requestUri = new Uri(url);
+                HttpClientHandler clientHandler = new HttpClientHandler();
 
-            if (itemUpdate != null)
-                request.Content = new StringContent(JsonConvert.SerializeObject(itemUpdate), Encoding.UTF8, "application/json");
+                HttpClient httpClient = new HttpClient(clientHandler);
+                var contentJson = new StringContent(JsonConvert.SerializeObject(itemUpdate), Encoding.UTF8, "application/json");
+                var response = await httpClient.PutAsync(requestUri, contentJson);
 
-            HttpResponseMessage response = await httpClient.SendAsync(request);
+                if (response.StatusCode == HttpStatusCode.NoContent)
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
 
-            if (response.StatusCode == HttpStatusCode.NoContent)
-                return true;
-            else
-                return false;
-        }
-        public async Task<IEnumerable<T>> GetAsync(bool forceRefresh = false)
-        {
-            return await Task.FromResult(items);
+                throw;
+            }
         }
     }
 }

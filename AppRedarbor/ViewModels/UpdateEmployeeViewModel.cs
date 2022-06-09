@@ -197,7 +197,7 @@ namespace AppRedarbor.ViewModels
 
             try
             {
-                LoadEmployeeId(Id);
+                await LoadEmployeeId(Id);
             }
             catch (Exception ex)
             {
@@ -209,7 +209,7 @@ namespace AppRedarbor.ViewModels
             }
         }
 
-        public async void LoadEmployeeId(int employeeId)
+        public async Task LoadEmployeeId(int employeeId)
         {
             try
             {

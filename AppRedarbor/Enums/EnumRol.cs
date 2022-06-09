@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AppRedarbor.Enums
+﻿namespace AppRedarbor.Enums
 {
     public enum EnumRol
     {
