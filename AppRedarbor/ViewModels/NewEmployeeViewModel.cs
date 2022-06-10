@@ -163,7 +163,7 @@ namespace AppRedarbor.ViewModels
                 UpdatedOn = dateNow
             };
 
-            var newEmployee = await _employeeRepo.SaveAsync(CT.UrlEmployeeApi, objEmployee);
+            var newEmployee = await _repoEmployee.SaveAsync(CT.UrlEmployeeApi, objEmployee);
             if (newEmployee)
             {
                 // This will pop the current page off the navigation stack

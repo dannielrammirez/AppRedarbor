@@ -5,7 +5,7 @@
              Title="{Binding Title}">
     
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Delete" Command="{Binding DeleteEmployeeCommand}" />
+        <ToolbarItem Text="Delete" Clicked="DeleteEmployee" />
         <ToolbarItem Text="Update" Command="{Binding UpdateEmployeeCommand}" />
     </ContentPage.ToolbarItems>
 

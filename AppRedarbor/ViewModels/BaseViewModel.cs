@@ -9,9 +9,18 @@ using Xamarin.Forms;
 
 namespace AppRedarbor.ViewModels
 {
-    public abstract class BaseViewModel : INotifyPropertyChanged
+    public class BaseViewModel : INotifyPropertyChanged
     {
-        public IEmployeeRepository _employeeRepo => DependencyService.Get<IEmployeeRepository>();
+        private readonly ICustomDependencyService depService;
+        public readonly IEmployeeRepository _repoEmployee;
+        public BaseViewModel(ICustomDependencyService depService)
+        {
+            this.depService = depService;
+            _repoEmployee = depService.Get<IEmployeeRepository>();
+        }
+        public BaseViewModel() : this(new CustomDependencyService())
+        {
+        }
 
         bool isBusy = false;
         public bool IsBusy

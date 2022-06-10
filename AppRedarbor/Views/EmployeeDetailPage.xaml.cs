@@ -13,5 +13,11 @@ namespace AppRedarbor.Views
             InitializeComponent();
             BindingContext = _viewModel = new EmployeeDetailViewModel();
         }
+
+        private async void DeleteEmployee(object sender, System.EventArgs e)
+        {
+            _viewModel.ConfirmDeleted = await DisplayActionSheet("Eliminar Empleado", "Cancelar", null, "Temporal", "Permanente");
+            _viewModel.OnDeleteEmployee();
+        }
     }
 }

@@ -111,6 +111,14 @@ namespace AppRedarbor.Models
             set { username = value; }
         }
 
+        private bool deleteDb = false;
+        public bool DeleteDb
+        {
+            get { return deleteDb; }
+            set { deleteDb = value; }
+        }
+
+
         private string title;
         public string Title
         {

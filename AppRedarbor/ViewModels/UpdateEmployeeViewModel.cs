@@ -182,7 +182,7 @@ namespace AppRedarbor.ViewModels
                 UpdatedOn = dateNow
             };
 
-            var newEmployee = await _employeeRepo.UpdateAsync(CT.UrlEmployeeApi + Id, objEmployee);
+            var newEmployee = await _repoEmployee.UpdateAsync(CT.UrlEmployeeApi + Id, objEmployee);
             if (newEmployee)
                 await Shell.Current.GoToAsync("..");
         }
@@ -213,7 +213,7 @@ namespace AppRedarbor.ViewModels
         {
             try
             {
-                var employee = await _employeeRepo.GetAsync(CT.UrlEmployeeApi, employeeId);
+                var employee = await _repoEmployee.GetAsync(CT.UrlEmployeeApi, employeeId);
                 //Id = employee.Id;
                 CompanyId = employee.CompanyId;
                 CreatedOn = employee.CreatedOn;

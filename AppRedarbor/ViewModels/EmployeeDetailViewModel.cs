@@ -25,8 +25,8 @@ namespace AppRedarbor.ViewModels
         private DateTime? lastLogin;
         private DateTime? deletedOn;
         private DateTime? updatedOn;
-        private bool confirmDeleted;
-        public bool ConfirmDeleted
+        private string  confirmDeleted;
+        public string ConfirmDeleted
         {
             get { return confirmDeleted; }
             set { confirmDeleted = value; }
@@ -43,9 +43,13 @@ namespace AppRedarbor.ViewModels
 
         public async void OnDeleteEmployee()
         {
+            if (ConfirmDeleted == "Cancelar") return;
+
             try
             {
-                var delete = await _employeeRepo.DeleteAsync(CT.UrlEmployeeApi, Id);
+                string action = ConfirmDeleted == "Temporal" ? "DeleteEmployee" : "DeleteDBEmployee";
+
+                var delete = await _repoEmployee.DeleteAsync($"{CT.UrlEmployeeApi}{action}/", Id);
                 if(delete)
                     await Shell.Current.GoToAsync("..");
             }
@@ -160,7 +164,7 @@ namespace AppRedarbor.ViewModels
         {
             try
             {
-                var employee = await _employeeRepo.GetAsync(CT.UrlEmployeeApi, employeeId);
+                var employee = await _repoEmployee.GetAsync(CT.UrlEmployeeApi, employeeId);
                 EmployeeId = employee.Id;
                 CompanyId = employee.CompanyId;
                 CreatedOn = employee.CreatedOn;

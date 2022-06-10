@@ -1,4 +1,6 @@
 ﻿using AppRedarbor.Models;
+using AppRedarbor.Services;
+using AppRedarbor.Services.IRepository;
 using AppRedarbor.Utilities;
 using AppRedarbor.Views;
 using System;
@@ -33,7 +35,7 @@ namespace AppRedarbor.ViewModels
             try
             {
                 Employees.Clear();
-                var employees = await _employeeRepo.GetAllAsync(CT.UrlEmployeeApi);
+                var employees = await _repoEmployee.GetAllAsync(CT.UrlEmployeeApi);
                 foreach (var employee in employees)
                 {
                     Employees.Add(employee);
